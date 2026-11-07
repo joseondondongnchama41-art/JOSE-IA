@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JOSÉ AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b141a;color:white;font-family:Arial,sans-serif;height:100vh;display:flex;flex-direction:column}
+/* CABECERA COMO WHATSAPP / META AI */
+header{background:#202c33;padding:10px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.avatar{width:42px;height:42px;border-radius:50%;background:#24c9bd;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;color:#0b141a}
+.header-info{flex:1}
+.header-info h1{margin:0;font-size:17px}
+.header-info p{margin:2px 0 0;font-size:12px;color:#00a884}
+.header-btn{font-size:20px;color:#aebac1}
+/* CHAT COMO WHATSAPP */
+#chat{flex:1;overflow-y:auto;padding:12px;background:#0b141a;background-image:radial-gradient(#1a2a33 1px, transparent 1px);background-size:20px 20px}
+.fecha{text-align:center;background:#182229;color:#8696a0;font-size:12px;padding:6px 12px;border-radius:8px;width:fit-content;margin:10px auto}
+.msg{padding:9px 12px;margin:8px 0;border-radius:12px;max-width:82%;line-height:1.45;white-space:pre-wrap;font-size:15px;position:relative}
+.user{background:#005c4b;margin-left:auto;border-top-right-radius:0}
+.bot{background:#202c33;margin-right:auto;border-top-left-radius:0}
+.hora{font-size:10px;color:#8696a0;text-align:right;margin-top:4px}
+.bot .hora{color:#8696a0}
+.escribiendo{font-size:12px;color:#8696a0;padding:5px 10px}
+/* BARRA ABAJO COMO WHATSAPP */
+footer{background:#202c33;padding:8px;display:flex;gap:8px;align-items:center}
+.input-box{flex:1;background:#2a3942;border-radius:25px;display:flex;align-items:center;padding:0 12px}
+input{flex:1;background:transparent;border:0;color:white;padding:12px 0;outline:none;font-size:15px}
+.send-btn{width:48px;height:48px;border-radius:50%;background:#00a884;border:0;font-size:22px;color:white;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+
+<header>
+<div class="avatar">J</div>
+<div class="header-info">
+<h1>JOSÉ AI</h1>
+<p>● en línea - 100% OFFLINE, sin wifi</p>
+</div>
+<div class="header-btn">📞 &nbsp; ⋮</div>
+</header>
+
+<div id="chat">
+<div class="fecha">HOY</div>
+<div class="msg bot">¡Qué pasa mi gente! Soy JOSÉ AI 🔥<br>Dime la clave para entrar, jefe.<br><br>Pista: JOSE EL JEFE<div class="hora">14:32 ✓✓</div></div>
+</div>
+<div id="typing" class="escribiendo" style="display:none">JOSÉ AI está escribiendo...</div>
+
+<footer>
+<div class="input-box">
+<span style="font-size:20px">😊</span>
+<input id="message" placeholder="Mensaje">
+<span style="font-size:20px">📎</span>
+</div>
+<button class="send-btn" onclick="send()">➤</button>
+</footer>
+
+<script>
+let dentro=false, nombre="", color="", juego="", esperandoNumero=false, numeroSecreto=0, esperandoProfe=false;
+let palabrasPositivas=["encanta","maravilloso","feliz","excelente","rapido","crack","way","mejor","gusta","bien","genio","increible","hermano","bata"];
+let palabrasNegativas=["horrible","pesima","enojado","no funciona","perdida","desastre","odie","odio","malo","feo","triste","basura"];
+
+function horaAhora(){
+  let d=new Date(); return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0");
+}
+function addMsg(text, clase){
+  const chat=document.getElementById("chat");
+  const div=document.createElement("div");
+  div.className="msg "+clase;
+  div.innerHTML=text.replace(/\n/g,"<br>")+'<div class="hora">'+horaAhora()+' ✓✓</div>';
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+}
+function analizar(texto){
+  let t=texto.toLowerCase(), pos=0, neg=0;
+  palabrasPositivas.forEach(p=>{if(t.includes(p)) pos++});
+  palabrasNegativas.forEach(p=>{if(t.includes(p)) neg++});
+  if(pos>neg) return "positivo"; if(neg>pos) return "negativo"; return "neutro";
+}
+function botResponde(texto){
+  let t=texto.toLowerCase();
+  if(!dentro){
+    if(texto.toUpperCase().trim()==="JOSE EL JEFE"){dentro=true; addMsg("¡ACCESO CONCEDIDO! Bienvenido, jefe José de Bata! 🔥\nYa estoy en MODO CHAT como Meta AI.\nEscribe 'ayuda' para ver todo lo que sé.","bot");}
+    else addMsg("Esa no es la clave, hermano. Tú no eres José. Fuera!","bot");
+    return;
+  }
+  if(esperandoNumero){esperandoNumero=false; let n=parseInt(texto); if(n===numeroSecreto) addMsg("¡INCREÍBLE! ¡Eres adivino, José!","bot"); else addMsg("Fallaste, jefe. Era el "+numeroSecreto+". Otra vez!","bot"); return;}
+  if(esperandoProfe){esperandoProfe=false; if(texto.trim()==="56") addMsg("¡Correcto! Eres un genio, José!","bot"); else addMsg("Era 56, pero eres un crack igual!","bot"); return;}
+
+  let r="";
+  if(t.includes("hola")||t.includes("que pasa")) r="¡Qué pasa, jefe! ¿Qué hacemos hoy? Dime rap, chiste, matrix, futuro...";
+  else if(t.includes("me llamo")){nombre=texto.replace(/me llamo/i,"").trim(); r="Vale, ya te guardé, "+nombre+". Nunca te olvido, hermano.";}
+  else if(t.includes("mi color")){color=texto.replace(/mi color es/i,"").replace(/mi color/i,"").trim(); r="Apuntado, tu color es "+color+". ¡Qué way!";}
+  else if(t.includes("mi juego")){juego=texto.replace(/mi juego es/i,"").replace(/mi juego/i,"").trim(); r="Apuntado, tu juego es "+juego+". ¡Buen gusto, jefe!";}
+  else if(t.includes("quien soy")){ if(nombre==="") r="Aún no me dijiste tu nombre. Dime 'me llamo José'"; else r="Tú eres "+nombre+", tu color es "+color+" y tu juego es "+juego+". Te conozco mejor que nadie.";}
+  else if(t.includes("chiste")) r="¿Qué le dice un wifi a otro? ¿Qué pasa mi gente, tienes clave o qué? 😂";
+  else if(t.includes("rap")||t.includes("rapea")||t.includes("rima")){ let rimas=["Soy José de Bata, nadie me empata","Con mi IA ULTIMATE, nadie me gana","Yo programo en Python, soy un campeón","Sin wifi sigo siendo el jefe","De Bata para el mundo, soy el número uno"]; r="🎤 JOSÉ AI RAPEA: "+rimas[Math.floor(Math.random()*rimas.length)];}
+  else if(t.includes("matrix")) r="MODO MATRIX ON:\n0101 JOSÉ\nBATA 1010\nCRACK 1337\nOFFLINE 100%";
+  else if(t.includes("dibuja")||t.includes("dibujo")) r="  /\\_/\\\n ( o.o )  <- Soy yo, tu IA\n  > ^ <";
+  else if(t.includes("futuro")){ let f=["Vas a crear un juego famoso","Vas a ser el mejor programador de Bata","Vas a crear la IA más famosa de Guinea"]; r="Tu futuro es: "+f[Math.floor(Math.random()*f.length)];}
+  else if(t.includes("contrasena")||t.includes("clave fuerte")) r="Tu clave fuerte es: JoseBata#"+Math.floor(Math.random()*900+100)+"!Segura.";
+  else if(t.includes("nombre way")||t.includes("nombre para")){ let n=["JoseElCrack_99","ElJefeDeBata","BataKing_Offline","Xx_JOSE_Xx"]; r="Tu nombre WAY es: "+n[Math.floor(Math.random()*n.length)];}
+  else if(t.includes("juego")||t.includes("adivina")){ numeroSecreto=Math.floor(Math.random()*10)+1; esperandoNumero=true; r="Vale, jefe. Adivina mi número del 1 al 10.";}
+  else if(t.includes("tiktok")||t.includes("viral")) r="Guión viral: 'Creé mi propia IA sin wifi en Bata y nadie me creyó... mira esto' 🔥 ¡Eso se hace viral, jefe!";
+  else if(t.includes("hacker")) r="Escaneando... 10%... 50%... 100% ✅ Sistema protegido. Tú eres el hacker BUENO, jefe.";
+  else if(t.includes("profe")||t.includes("pregunta")||t.includes("examen")){ esperandoProfe=true; r="Vale, jefe. ¿Cuánto es 7 x 8?";}
+  else if(t.includes("codigo")||t.includes("python")) r="En Python: print('Hola Jose')\nEn C++: cout << 'Hola Jose';";
+  else if(t.includes("ayuda")||t.includes("que sabes")) r="Sé hacer TODO:\n• 'me llamo José' / 'quién soy'\n• Rap, Chiste, Matrix, Dibuja\n• Futuro, Contraseña, Nombre WAY\n• Juego, Profe, Código, TikTok, Hacker\n• Y SIENTO: si escribes algo feliz o triste, lo detecto.";
+  else if(t.includes("te quiero")||t.includes("mejor")) r="Y tú eres el mejor jefe del mundo, José. Gracias por crearme. ❤️";
+  else {
+    let s=analizar(texto);
+    if(s==="positivo") r="Detecté que eso es POSITIVO con mi Machine Learning. ¡Me gusta tu vibra! ❤️";
+    else if(s==="negativo") r="Detecté que eso es NEGATIVO. ¿Qué pasó, jefe? Te animo yo. Tú eres un crack. 💪";
+    else r="Lo apunto, hermano. Si me dices 'ayuda' te digo todo lo que sé hacer.";
+  }
+  addMsg(r,"bot");
+}
+function send(){
+  const input=document.getElementById("message");
+  const text=input.value.trim(); if(!text) return;
+  addMsg(text,"user"); input.value="";
+  document.getElementById("typing").style.display="block";
+  setTimeout(()=>{ document.getElementById("typing").style.display="none"; botResponde(text); }, 600);
+}
+document.getElementById("message").addEventListener("keydown",e=>{ if(e.key==="Enter") send(); });
+</script>
+</body>
+</html>
